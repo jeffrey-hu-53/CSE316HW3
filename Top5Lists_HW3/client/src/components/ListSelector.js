@@ -16,6 +16,11 @@ const ListSelector = () => {
         store.loadIdNamePairs();
     }, []);
 
+    function addList(){
+        console.log("List to be added!");
+        store.addList();
+    }
+
     let listCard = "";
     if (store) {
         listCard = store.idNamePairs.map((pair) => (
@@ -33,7 +38,8 @@ const ListSelector = () => {
                     type="button"
                     id="add-list-button"
                     className="top5-button"
-                    value="+" />
+                    value="+" 
+                    onClick={addList}/>
                 Your Lists
             </div>
             <div id="list-selector-list">

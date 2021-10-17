@@ -17,7 +17,9 @@ export const GlobalStoreActionType = {
     CLOSE_CURRENT_LIST: "CLOSE_CURRENT_LIST",
     LOAD_ID_NAME_PAIRS: "LOAD_ID_NAME_PAIRS",
     SET_CURRENT_LIST: "SET_CURRENT_LIST",
-    SET_LIST_NAME_EDIT_ACTIVE: "SET_LIST_NAME_EDIT_ACTIVE"
+    SET_LIST_NAME_EDIT_ACTIVE: "SET_LIST_NAME_EDIT_ACTIVE",
+    ADD_LIST: "ADD_LIST",
+    DELETE_LIST: "DELETE_LIST"
 }
 
 // WE'LL NEED THIS TO PROCESS TRANSACTIONS
@@ -94,6 +96,28 @@ export const useGlobalStore = () => {
                     isListNameEditActive: true,
                     isItemEditActive: false,
                     listMarkedForDeletion: null
+                });
+            }
+            // ADD LIST
+            case GlobalStoreActionType.ADD_LIST: {
+                return setStore({
+                    idNamePairs: store.idNamePairs,
+                    currentList: payload,
+                    newListCounter: (store.newListCounter + 1),
+                    isListNameEditActive: false,
+                    isItemEditActive: false,
+                    listMarkedForDeletion: null
+                });
+            }
+            // DELETE LIST
+            case GlobalStoreActionType.DELETE_LIST: {
+                return setStore({
+                    idNamePairs: store.idNamePairs,
+                    currentList: store.currentList,
+                    newListCounter: store.newListCounter,
+                    isListNameEditActive: false,
+                    isItemEditActive: false,
+                    listMarkedForDeletion: store.currentList
                 });
             }
             default:
@@ -235,6 +259,47 @@ export const useGlobalStore = () => {
             type: GlobalStoreActionType.SET_LIST_NAME_EDIT_ACTIVE,
             payload: null
         });
+    }
+
+    //function to add list
+    store.addList = function () {
+        async function asyncAddList () {
+            const response = await api.createTop5List({
+                "name": `Untitled${store.newListCounter}`,
+                "items": [
+                    "?",
+                    "?",
+                    "?",
+                    "?",
+                    "?"
+                ]
+            });
+            if (response.data.success){
+                storeReducer({
+                    type: GlobalStoreActionType.ADD_LIST,
+                    payload: store.currentList
+                });
+                console.log(store);
+            }
+            store.loadIdNamePairs();
+        }
+        asyncAddList();
+        console.log(store.newListCounter);
+    }
+
+    //Display modal, if yes then delete marked list, if no then hide modal
+    store.displayDeleteListModal = function () {
+        console.log("delete modal to be displayed");
+    }
+    store.hideDeleteListModal = function () {
+        
+    }
+    store.deleteMarkedList = function () {
+        console.log("Reached Delete here!");
+        async function asyncDeleteMarkedList () {
+            const response = await api.deleteTop5ListById(store.listMarkedForDeletion._id);
+        }
+        asyncDeleteMarkedList();
     }
 
     // THIS GIVES OUR STORE AND ITS REDUCER TO ANY COMPONENT THAT NEEDS IT
