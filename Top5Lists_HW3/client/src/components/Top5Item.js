@@ -50,20 +50,17 @@ function Top5Item(props) {
 
     function toggleEdit() {
         let newActive = !editActive;
-        // if (newActive) {
-        //     store.setIsListNameEditActive();
-        // }
+        if (newActive) {
+            store.setIsItemNameEditActive();
+        }
         setEditActive(newActive);
-    }
-
-    function handleOnBlur(event) {
-        
     }
 
     function handleKeyPress(event) {
         if (event.code === "Enter") {
-            let id = event.target.id.substring("list-".length);
-            store.changeListName(id, text);
+            let index = event.target.id.substring("item-".length) - 1;
+            console.log(text);
+            store.addChangeItemTransaction(index, text);
             toggleEdit();
         }
     }
@@ -104,6 +101,7 @@ function Top5Item(props) {
                 id={'item-' + (index + 1)}
                 className={itemClass}
                 type='text'
+                autoFocus
                 onKeyPress={handleKeyPress}
                 onChange={handleUpdateText}
             />;

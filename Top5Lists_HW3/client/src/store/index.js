@@ -2,6 +2,7 @@ import { createContext, useState } from 'react'
 import jsTPS from '../common/jsTPS'
 import api from '../api'
 import MoveItem_Transaction from '../transactions/MoveItem_Transaction'
+import ChangeItem_Transaction from '../transactions/ChangeItem_Transaction';
 export const GlobalStoreContext = createContext({});
 /*
     This is our global data store. Note that it uses the Flux design pattern,
@@ -99,6 +100,17 @@ export const useGlobalStore = () => {
                     listMarkedForDeletion: null
                 });
             }
+
+            case GlobalStoreActionType.SET_ITEM_NAME_EDIT_ACTIVE: {
+                return setStore({
+                    idNamePairs: store.idNamePairs,
+                    currentList: payload,
+                    newListCounter: store.newListCounter,
+                    isListNameEditActive: false,
+                    isItemEditActive: true,
+                    listMarkedForDeletion: null
+                });
+            }
             // ADD LIST
             case GlobalStoreActionType.ADD_LIST: {
                 return setStore({
@@ -125,7 +137,7 @@ export const useGlobalStore = () => {
             case GlobalStoreActionType.DELETE_LIST: {
                 return setStore({
                     idNamePairs: payload,
-                    currentList: store.currentList,
+                    currentList: null,
                     newListCounter: store.newListCounter,
                     isListNameEditActive: false,
                     isItemEditActive: false,
@@ -246,6 +258,20 @@ export const useGlobalStore = () => {
         // NOW MAKE IT OFFICIAL
         store.updateCurrentList();
     }
+
+    //Change item name
+    store.addChangeItemTransaction = function (index, newText) {
+        let oldText = store.currentList.items[index];
+        console.log(oldText);
+        let transaction = new ChangeItem_Transaction(store, index, oldText, newText);
+        tps.addTransaction(transaction);
+    }
+
+    store.renameItem = function (index, text) {
+        store.currentList.items[index] = text;
+        store.updateCurrentList();
+    }
+
     store.updateCurrentList = function() {
         async function asyncUpdateCurrentList() {
             const response = await api.updateTop5ListById(store.currentList._id, store.currentList);
@@ -270,6 +296,14 @@ export const useGlobalStore = () => {
         storeReducer({
             type: GlobalStoreActionType.SET_LIST_NAME_EDIT_ACTIVE,
             payload: null
+        });
+    }
+
+    // This enables item name edit
+    store.setIsItemNameEditActive = function () {
+        storeReducer({
+            type: GlobalStoreActionType.SET_ITEM_NAME_EDIT_ACTIVE,
+            payload: store.currentList
         });
     }
 
@@ -351,6 +385,8 @@ export const useGlobalStore = () => {
         }
         asyncDeleteMarkedList();
         store.hideDeleteListModal();
+        //This forces a state update which refreshes the react components
+        store.loadIdNamePairs();
     }
 
     // THIS GIVES OUR STORE AND ITS REDUCER TO ANY COMPONENT THAT NEEDS IT
