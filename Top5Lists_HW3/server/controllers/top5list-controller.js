@@ -119,11 +119,11 @@ getTop5ListPairs = async (req, res) => {
         if (err) {
             return res.status(400).json({ success: false, error: err})
         }
-        if (!top5Lists.length) {
-            return res
-                .status(404)
-                .json({ success: false, error: 'Top 5 Lists not found'})
-        }
+        // if (!top5Lists.length) {
+        //     return res
+        //         .status(404)
+        //         .json({ success: false, error: 'Top 5 Lists not found'})
+        // }
         else {
             // PUT ALL THE LISTS INTO ID, NAME PAIRS
             let pairs = [];

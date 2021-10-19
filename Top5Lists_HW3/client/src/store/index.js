@@ -105,9 +105,9 @@ export const useGlobalStore = () => {
             case GlobalStoreActionType.SET_LIST_NAME_EDIT_ACTIVE: {
                 return setStore({
                     idNamePairs: store.idNamePairs,
-                    currentList: payload,
+                    currentList: payload.currentList,
                     newListCounter: store.newListCounter,
-                    isListNameEditActive: true,
+                    isListNameEditActive: payload.cardStatus,
                     isItemEditActive: false,
                     listMarkedForDeletion: null,
                     hasUndo: false,
@@ -350,19 +350,23 @@ export const useGlobalStore = () => {
     }
 
     // THIS FUNCTION ENABLES THE PROCESS OF EDITING A LIST NAME
-    store.setIsListNameEditActive = function () {
+    store.setIsListNameEditActive = function (cardStatus) {
         storeReducer({
             type: GlobalStoreActionType.SET_LIST_NAME_EDIT_ACTIVE,
-            payload: null
+            payload: {
+                currentList: null,
+                cardStatus: cardStatus
+            }
         });
     }
 
     // This enables item name edit
-    store.setIsItemNameEditActive = function () {
+    store.setIsItemNameEditActive = function (itemEditStatus) {
         storeReducer({
             type: GlobalStoreActionType.SET_ITEM_NAME_EDIT_ACTIVE,
             payload: {
-                currentList: store.currentList
+                currentList: store.currentList,
+                itemEditStatus: itemEditStatus
             }
         });
     }

@@ -29,11 +29,11 @@ function EditToolbar() {
     // if (store.isListNameEditActive) {
     //     editStatus = true;
     // }
-    let itemEditStatus = false;
-    if (store.isItemEditActive){
-        itemEditStatus = true;
-    }
-    if (!itemEditStatus){
+    // let itemEditStatus = false;
+    // if (store.isItemEditActive){
+    //     itemEditStatus = true;
+    // }
+    if (!store.isItemEditActive){
         if (store.currentList !== null){
             closeButtonClass = "top5-button";
             if (store.hasUndo){
@@ -49,32 +49,56 @@ function EditToolbar() {
             }
         }
     }
-    
-    return (
-        <div id="edit-toolbar">
-            <div
-                disabled={itemEditStatus}
-                id='undo-button'
-                onClick={handleUndo}
-                className={undoButtonClass}>
-                &#x21B6;
+    if (store.isItemEditActive){
+        return (
+            <div id="edit-toolbar">
+                <div
+                    disabled={String(store.isItemEditActive)}
+                    id='undo-button'
+                    className={undoButtonClass}>
+                    &#x21B6;
+                </div>
+                <div
+                    disabled={String(store.isItemEditActive)}
+                    id='redo-button'
+                    className={redoButtonClass}>
+                    &#x21B7;
+                </div>
+                <div
+                    disabled={String(store.isItemEditActive)}
+                    id='close-button'
+                    className={closeButtonClass}>
+                    &#x24E7;
+                </div>
             </div>
-            <div
-                disabled={itemEditStatus}
-                id='redo-button'
-                onClick={handleRedo}
-                className={redoButtonClass}>
-                &#x21B7;
+        )
+    } else {
+        return (
+            <div id="edit-toolbar">
+                <div
+                    disabled={String(store.isItemEditActive)}
+                    id='undo-button'
+                    onClick={handleUndo}
+                    className={undoButtonClass}>
+                    &#x21B6;
+                </div>
+                <div
+                    disabled={String(store.isItemEditActive)}
+                    id='redo-button'
+                    onClick={handleRedo}
+                    className={redoButtonClass}>
+                    &#x21B7;
+                </div>
+                <div
+                    disabled={String(store.isItemEditActive)}
+                    id='close-button'
+                    onClick={handleClose}
+                    className={closeButtonClass}>
+                    &#x24E7;
+                </div>
             </div>
-            <div
-                disabled={itemEditStatus}
-                id='close-button'
-                onClick={handleClose}
-                className={closeButtonClass}>
-                &#x24E7;
-            </div>
-        </div>
-    )
+        )
+    }
 }
 
 export default EditToolbar;

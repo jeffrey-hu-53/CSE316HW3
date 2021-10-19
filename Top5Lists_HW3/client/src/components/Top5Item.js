@@ -51,7 +51,9 @@ function Top5Item(props) {
     function toggleEdit() {
         let newActive = !editActive;
         if (newActive) {
-            store.setIsItemNameEditActive();
+            store.setIsItemNameEditActive(true);
+        } else {
+            store.setIsItemNameEditActive(false)
         }
         setEditActive(newActive);
     }
